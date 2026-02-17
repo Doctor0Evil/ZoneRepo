@@ -1,0 +1,262 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://neuro-eco.org/schemas/neuro-safe-nicotine-state-v1.0.json",
+  "title": "NeuroSafeNicotineState v1.0",
+  "description": "Minimal state vector for neurosafe nicotine governance, aligned with CEIM/NanoKarma and NeuroEcoKarma predicates.",
+  "type": "object",
+  "additionalProperties": false,
+
+  "properties": {
+    "state_id": {
+      "type": "string",
+      "description": "Opaque, unique identifier for this nicotine state snapshot (UUID or hash)."
+    },
+
+    "agent_id": {
+      "type": "string",
+      "description": "Agent identifier (DID, Bostrom ID, or local cohort ID) for whom this state is computed."
+    },
+
+    "timestamp": {
+      "type": "string",
+      "format": "date-time",
+      "description": "ISO 8601 timestamp when this nicotine state vector was evaluated."
+    },
+
+    "context_version": {
+      "type": "string",
+      "description": "Version tag for model parameters and evidence bundles used to compute this state (e.g., 'NSN-params-v1.0')."
+    },
+
+    "x_host": {
+      "type": "object",
+      "description": "Host neuro-physiological and autonomy-relevant status used as an outer-domain safety envelope; MUST NOT encode inner mental content.",
+      "additionalProperties": false,
+      "properties": {
+        "bio_state_id": {
+          "type": "string",
+          "description": "Reference to a BioState or DEFAULTBIOPHYSEVIDENCE-derived record used to support this snapshot (if available)."
+        },
+        "fatigue_index": {
+          "type": "number",
+          "minimum": 0.0,
+          "maximum": 1.0,
+          "description": "Dimensionless fatigue/load scalar in [0,1], derived from bio-telemetry (HRV, sleep, activity); 0 = fully rested, 1 = critical fatigue. No neural content."
+        },
+        "stress_index": {
+          "type": "number",
+          "minimum": 0.0,
+          "maximum": 1.0,
+          "description": "Dimensionless stress scalar in [0,1], derived from peripheral markers (HRV bands, cortisol bands, etc.); 0 = baseline, 1 = acute stress. No neural content."
+        },
+        "bcx_safety_score": {
+          "type": "number",
+          "minimum": 0.0,
+          "maximum": 1.0,
+          "description": "Optional biocompatibility safety score in [0,1] (BCI-like outer envelope only); values below 0.3 SHOULD trigger more conservative nicotine policies."
+        },
+        "host_safety_band": {
+          "type": "string",
+          "enum": ["comfort", "caution", "critical"],
+          "description": "Discrete safety band derived from fatigue_index, stress_index, and bcx_safety_score (e.g., comfort = both <0.4, caution = any in [0.4,0.7), critical = any >=0.7)."
+        }
+      },
+      "required": [
+        "fatigue_index",
+        "stress_index",
+        "host_safety_band"
+      ]
+    },
+
+    "z": {
+      "type": "object",
+      "description": "Nicotine exposure and kinetics summary for the agent over a fixed time window.",
+      "additionalProperties": false,
+      "properties": {
+        "window_minutes": {
+          "type": "integer",
+          "minimum": 5,
+          "description": "Length of the aggregation window in minutes for which z, x_eco, and y_crave are computed (e.g., 30, 60, 1440)."
+        },
+        "nicotine_intake_mg": {
+          "type": "number",
+          "minimum": 0.0,
+          "description": "Total estimated nicotine mass taken in by the host in this window, in milligrams (mg), from all sources (smoked, vaped, oral, patch, etc.)."
+        },
+        "cig_equiv_count": {
+          "type": "number",
+          "minimum": 0.0,
+          "description": "Cigarette equivalent count over this window, computed using a jurisdictionally specified mg-per-cig standard."
+        },
+        "delivery_modes": {
+          "type": "array",
+          "description": "Distinct nicotine delivery modes observed in this window.",
+          "items": {
+            "type": "string",
+            "enum": [
+              "combustion-cigarette",
+              "combustion-cigar",
+              "combustion-pipe",
+              "vape-nic-salt",
+              "vape-freebase",
+              "oral-pouch",
+              "oral-gum",
+              "oral-lozenge",
+              "transdermal-patch",
+              "other"
+            ]
+          },
+          "uniqueItems": true
+        },
+        "last_intake_timestamp": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Timestamp of the last nicotine intake event within this window."
+        },
+        "estimated_plasma_nicotine_ng_per_ml": {
+          "type": "number",
+          "minimum": 0.0,
+          "description": "Optional coarse-grained estimate of current plasma nicotine concentration (ng/mL) produced by a CEIM-style kinetic model."
+        }
+      },
+      "required": [
+        "window_minutes",
+        "nicotine_intake_mg",
+        "cig_equiv_count",
+        "delivery_modes"
+      ]
+    },
+
+    "x_eco": {
+      "type": "object",
+      "description": "Eco-Karma vector for nicotine-related actions in this window, aligned with CEIM/NanoKarma Mi and Ki operators.",
+      "additionalProperties": false,
+      "properties": {
+        "eco_window_id": {
+          "type": "string",
+          "description": "Foreign key or hash linking to the ActionEvent and PollutantMass records used to compute these aggregates (if present)."
+        },
+        "co2e_kg": {
+          "type": "number",
+          "description": "Lifecycle CO2e emissions (kg) associated with nicotine consumption in this window (production + distribution + use), aggregated over all products."
+        },
+        "particulate_pm2_5_g": {
+          "type": "number",
+          "description": "Estimated PM2.5 mass to air (g) from combustion nicotine events in this window."
+        },
+        "butt_waste_count": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Number of cigarette butts generated in this window (regardless of disposal route)."
+        },
+        "butt_mismanaged_count": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Number of butts inferred or observed as mismanaged (litter, storm drains, soil/water)."
+        },
+        "plastic_packaging_g": {
+          "type": "number",
+          "minimum": 0.0,
+          "description": "Mass of plastic packaging (g) associated with nicotine products used or purchased in this window."
+        },
+        "glass_aluminum_packaging_g": {
+          "type": "number",
+          "minimum": 0.0,
+          "description": "Mass of glass and/or aluminum packaging (g) associated with nicotine products in this window."
+        },
+        "eco_k_delta": {
+          "type": "number",
+          "description": "Net NanoKarma delta K_i (dimensionless) for nicotine-related actions in this window, after applying hazard weights λ_i and scaling factors β_i."
+        },
+        "eco_safety_band": {
+          "type": "string",
+          "enum": ["within-envelope", "near-boundary", "breach"],
+          "description": "Discrete classification of nicotine-related ecological impact relative to local P_eco constraints for this agent/population."
+        }
+      },
+      "required": [
+        "co2e_kg",
+        "eco_k_delta",
+        "eco_safety_band"
+      ]
+    },
+
+    "y_crave": {
+      "type": "object",
+      "description": "Craving and risk-of-harm envelope for nicotine, used as a governance predicate; MUST be computed from behavior, context, and safe bio-telemetry, not inner mental content.",
+      "additionalProperties": false,
+      "properties": {
+        "crave_score": {
+          "type": "number",
+          "minimum": 0.0,
+          "maximum": 1.0,
+          "description": "Dimensionless craving index in [0,1], derived from observed patterns (time-since-last-use, use frequency, context triggers, self-reported urge) and BioState-compatible signals; 0 = no observed urge, 1 = acute, high-risk urge."
+        },
+        "relapse_risk_score": {
+          "type": "number",
+          "minimum": 0.0,
+          "maximum": 1.0,
+          "description": "Estimated relapse/overuse risk in [0,1] for the next governance horizon (e.g., next 24h), given current behaviors and x_host; 0 = negligible, 1 = extreme."
+        },
+        "harm_reduction_band": {
+          "type": "string",
+          "enum": ["neuro-safe", "caution", "override-required"],
+          "description": "Policy-ready banding over crave_score and relapse_risk_score (and possibly x_host.host_safety_band), to drive gating of nicotine offers and device permissions."
+        },
+        "support_recommendations": {
+          "type": "array",
+          "description": "Optional machine-generated, non-coercive support or mitigation suggestions associated with this state.",
+          "items": {
+            "type": "string",
+            "enum": [
+              "no-intervention",
+              "offer-water-break",
+              "offer-breathing-exercise",
+              "suggest-delay-15-min",
+              "suggest-low-harm-alt",
+              "suggest-contact-support",
+              "lock-high-dose-device",
+              "limit-combustion-mode",
+              "geo-limit-smoking-zones"
+            ]
+          }
+        }
+      },
+      "required": [
+        "crave_score",
+        "relapse_risk_score",
+        "harm_reduction_band"
+      ]
+    },
+
+    "governance_flags": {
+      "type": "object",
+      "description": "Optional governance-ready flags derived from x_host, z, x_eco, and y_crave to plug into EcoAdmissible/KarmaAdmissible-style predicates.",
+      "additionalProperties": false,
+      "properties": {
+        "eco_admissible": {
+          "type": "boolean",
+          "description": "True if projected nicotine-related stressor vector remains inside local ecological safety polytope P_eco."
+        },
+        "karma_admissible": {
+          "type": "boolean",
+          "description": "True if K_person,proj after nicotine actions remains above the negotiated debt floor -K for this jurisdiction."
+        },
+        "neuro_safe_nicotine_admissible": {
+          "type": "boolean",
+          "description": "True if, given x_host and y_crave, nicotine provisioning is considered neurosafe (outer-domain only) under local policy."
+        }
+      }
+    }
+  },
+
+  "required": [
+    "state_id",
+    "agent_id",
+    "timestamp",
+    "x_host",
+    "z",
+    "x_eco",
+    "y_crave"
+  ]
+}
