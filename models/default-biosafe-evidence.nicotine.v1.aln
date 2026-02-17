@@ -1,0 +1,89 @@
+aln_version: "1.0"
+id: "default-biosafe-evidence.nicotine.v1.aln"
+owner_did: "bostrom18sd2ujv24ual9c9pshtxys6j8knh6xaead9ye7"
+description: >
+  Evidence bundle for HostBudget and BioCompatibilityEnvelope during nicotine
+  addiction neuromodulation—mapping raw physiology to normalized safety axes.
+
+axes:
+  - name: "Energy_E"
+    modality: "metabolic load, sleep, HRV"
+    evidence_refs:
+      - "validating-bci-0-3-neurobiophy.md#HRV-fatigue"   # HRV, fatigue[file:23]
+    units:
+      - "ms_SDNN"
+      - "sleep_efficiency_percent"
+      - "METs"
+    normalization:
+      rule: |
+        Map SDNN >= 70 ms and sleep_efficiency >= 90% to Energy_E ≈ 0.0.
+        Map SDNN <= 30 ms and sleep_efficiency <= 70% sustained over ≥ 7 days
+        to Energy_E ≈ 1.0, interpolate linearly otherwise.
+    stress_label: "energy fatigue, allostatic load"
+
+  - name: "Protein_Burden_M_prot"
+    modality: "systemic inflammation"
+    evidence_refs:
+      - "validating-bci-0-3-neurobiophy.md#IL6-CRP"       # IL‑6, CRP[file:23]
+      - "how-can-we-mathematically-figu.md#CEIM"          # CEIM integration[file:28]
+    units:
+      - "pg/mL_IL-6"
+      - "mg/L_CRP"
+    normalization:
+      rule: |
+        IL-6 <= 1 pg/mL and CRP <= 1 mg/L → M_prot ≈ 0.0.
+        IL-6 >= 5 pg/mL or CRP >= 3 mg/L → M_prot ≈ 1.0.
+        Use continuous ramp between these points, with Errority tags where cohort-specific.
+    stress_label: "inflammation, tissue hazard"
+
+  - name: "Bio_Impact_S_bio"
+    modality: "drug load, nanoswarm, organ stress"
+    evidence_refs:
+      - "validating-bci-0-3-neurobiophy.md#nanoswarm"     # nanotoxicology[file:23]
+      - "how-can-we-mathematically-figu.md#CEIM"          # mass-balance[file:28]
+    units:
+      - "mg/kg_drug"
+      - "particles/mL_nanoswarm"
+      - "normalized_liver_kidney_markers"
+    normalization:
+      rule: |
+        Map zero or low chronic exposure to S_bio ≈ 0.0.
+        Map LOAEL-equivalent nanoswarm dose or drug burden and persistent organ stress
+        to S_bio ≈ 1.0, with intermediate scaling per toxicology curves.
+
+  - name: "Duty_Residence_Time_theta"
+    modality: "neuromodulation duty cycle"
+    evidence_refs:
+      - "validating-bci-0-3-neurobiophy.md#BioLimits"     # duty limits[file:23]
+    units:
+      - "fraction_time_active"
+      - "minutes_per_session"
+      - "sessions_per_week"
+    normalization:
+      rule: |
+        Duty <= 0.1, sessions <= 2/week, session_length <= 20 min → θ ≈ 0.0.
+        Duty >= 0.5, sessions >= 7/week, session_length >= 60 min → θ ≈ 1.0.
+
+  - name: "Cortical_Temperature_deltaT"
+    modality: "brain temperature"
+    evidence_refs:
+      - "validating-bci-0-3-neurobiophy.md#temperature"   # thermal safety[file:23]
+    units:
+      - "C_above_baseline"
+    normalization:
+      rule: |
+        ΔT <= 0.5 C → ΔT_norm ≈ 0.0.
+        ΔT >= 2.0 C sustained → ΔT_norm ≈ 1.0.
+
+host_budget:
+  scalar_name: "H_host"
+  formula: "H_host = max( Energy_E, M_prot, S_bio, theta, deltaT )"
+  ceiling: 0.3
+  invariants:
+    - "For any neuromodulation step: H_host_after <= H_host_before."
+    - "Any update to axis bounds must tighten (no relaxation) unless labeled provisional_Errority with evidence."
+
+errority:
+  on_violation:
+    - "Log Errority event with full telemetry and protocol ID."
+    - "Tighten relevant axis envelopes; never relax."
