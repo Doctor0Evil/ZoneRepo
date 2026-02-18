@@ -1,0 +1,35 @@
+flowchart LR
+    subgraph AI_Interface[AI / Apps / Browsers]
+        A1[Chat Platform<br/>Prompts & Tools]
+        A2[AI Browser / Extension]
+        A3[CLI / IDE Agent]
+    end
+
+    subgraph ZoneRepo[ZoneRepo Control Plane]
+        Z1[Intent API<br/>/v1/intents]
+        Z2[Policy Engine<br/>Zones, Tenants, Guardrails]
+        Z3[Decision API<br/>/v1/terraform/decision]
+    end
+
+    subgraph Terraform[Terraform Cloud / Enterprise]
+        T1[Git Push / Plan]
+        T2[Run Task<br/>→ ZoneRepo Bridge]
+    end
+
+    subgraph Sophos[Sophos Factory]
+        S1[Incoming Webhook Job]
+        S2[Scan Pipelines<br/>OPA / Terrascan / Checkov]
+    end
+
+    AI_Interface -->|intent request| Z1
+    Z1 -->|ticket & workspace mapping| AI_Interface
+
+    AI_Interface -->|trigger plan with ticket| T1
+    T1 --> T2
+    T2 -->|webhook| S1
+    S1 --> S2
+    S2 -->|scan result| Z3
+    T2 -->|plan metadata| Z3
+    Z2 <-->|evaluate| Z3
+    Z3 -->|allow/deny + reason| T2
+    T2 -->|Run Task callback| T1
