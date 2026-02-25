@@ -1,5 +1,7 @@
 use std::collections::HashMap;
 
+pub mod lua_policy;
+
 // ---------- Core domain types ----------
 
 #[derive(Clone, Debug, PartialEq, Eq, Hash)]
@@ -243,4 +245,12 @@ pub fn step_world<P: PolicyEngine>(
     for agent in world.agents.iter_mut() {
         agent.step(world, policies, dt);
     }
+}
+
+use lua_policy::LuaPolicyEngine;
+
+// Example factory
+pub fn make_lua_policy_engine_from_file(path: &str) -> anyhow::Result<LuaPolicyEngine> {
+    let script_source = std::fs::read_to_string(path)?;
+    LuaPolicyEngine::new(&script_source)
 }
