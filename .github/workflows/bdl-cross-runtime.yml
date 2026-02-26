@@ -1,0 +1,70 @@
+name: BDL Cross-Runtime Corpus
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  corpus-diff:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Set up Rust
+        uses: dtolnay/rust-toolchain@stable
+
+      - name: Install JS dependencies
+        run: |
+          npm ci
+
+      - name: Build Rust parser
+        run: |
+          cargo build --package bdl-rust-parser --release
+
+      - name: Run cross-runtime corpus diff
+        run: |
+          #!/usr/bin/env bash
+          set -euo pipefail
+
+          JS_RUNNER="node bdl-tests/tools/run-js.mjs"
+          RUST_RUNNER="bdl-tests/tools/run-rust.sh"
+          NORMALIZE="node bdl-tests/tools/normalize-json.mjs"
+
+          fail=0
+
+          for case_dir in bdl-tests/corpus/*; do
+            [ -d "$case_dir" ] || continue
+            echo "== Case: $(basename "$case_dir") =="
+
+            js_out="$case_dir/js-output.json"
+            rs_out="$case_dir/rust-output.json"
+            js_norm="$case_dir/js-output.norm.json"
+            rs_norm="$case_dir/rust-output.norm.json"
+
+            $JS_RUNNER "$case_dir" > "$js_out"
+            $RUST_RUNNER "$case_dir" > "$rs_out"
+
+            $NORMALIZE "$js_out" > "$js_norm"
+            $NORMALIZE "$rs_out" > "$rs_norm"
+
+            if ! diff -u "$js_norm" "$rs_norm"; then
+              echo "::error::Cross-runtime mismatch in $(basename "$case_dir")"
+              fail=1
+            else
+              echo "OK: $(basename "$case_dir")"
+            fi
+          done
+
+          if [ "$fail" -ne 0 ]; then
+            echo "One or more cases failed cross-runtime equivalence."
+            exit 1
+          fi
