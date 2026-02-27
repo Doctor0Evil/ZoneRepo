@@ -82,6 +82,29 @@ pub struct PolicyDecision {
     pub reason: String,
 }
 
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct EcoUsageCommitment {
+    /// Commitment to eco-usage trajectory (e.g. Pedersen commitment).
+    pub commitment: String,
+    /// Commitment to Phoenix eco envelope parameters (same curve/base).
+    pub envelope_commitment: String,
+    /// Description of the relation proven in ZK, e.g. "eco_usage <= envelope".
+    pub relation: String,
+    /// Reference to the proving system/circuit version.
+    pub scheme: String, // e.g. "groth16-phoenix-eco-v1"
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct LedgerAnchor {
+    pub chain: String,
+    pub network: String,
+    pub tx_hash: String,
+    pub source_id: String,
+    /// Optional ZK-friendly eco-usage commitment metadata.
+    #[serde(default)]
+    pub eco_usage_commitment: Option<EcoUsageCommitment>,
+}
+
 pub trait DidLedgerVerifier {
     fn verify_consent_envelope(&self, env: &ConsentEnvelope) -> anyhow::Result<()>;
     fn verify_safety_certificate(&self, cert: &SafetyCertificate) -> anyhow::Result<()>;
