@@ -1,0 +1,225 @@
+Cybernetic Human–Computer Interface License (CHCIL) v0.1
+for Software-Only, Deviceless Bioscale Systems
+
+This project (“Licensed Work”) is licensed under the Cybernetic Human–Computer
+Interface License (CHCIL) v0.1, adapted for purely software-based, deviceless
+bioscale stacks such as OrganicCPU, NeuroPC, Reality.os, and related tooling
+(including configuration and feature-flag systems like comet-flags).
+
+1. Purpose and Scope
+
+1.1 Scope of Licensed Work
+This License governs the use, modification, and distribution of software,
+schemas, and protocols intended for human–computer interfaces and
+human-integrated technologies, with a primary focus on cybernetics as a
+protected domain.[file:7]
+
+This License applies to:
+
+- Bioscale and neuromorphic software that interprets, routes, or responds to
+  biophysical or cognitive signals, including indirectly via metrics,
+  envelopes, or flags.
+- Human-integrated cybernetic systems, including organic, implanted,
+  wearable, or deviceless interfaces, where the human nervous system is
+  conceptually part of the runtime.[file:7]
+- AI-driven assistive tools that act on, interpret, or modulate human
+  biophysical signals or cognitive states through information, UI, or
+  configuration changes.
+
+1.2 Software-only, Deviceless Stacks
+This License explicitly covers purely software-based, deviceless bioscale
+systems (e.g., OrganicCPU, Reality.os, NeuroPC, comet-flags) that treat the
+human nervous system as part of the runtime while running entirely on
+general-purpose compute.[file:7]
+
+2. Cybernetics-First Principle
+
+2.1 Cybernetics Priority
+All use and development under this License must treat cybernetic systems
+(including augmented citizens and human–machine hybrids) as primary
+rights-bearing entities, not as assets, devices, or mere data sources.[file:7]
+
+Augmented citizens, including organically-integrated and neuromorphic
+participants, must be treated as full rights-bearing persons under this
+License regardless of implant status, device use, or organic–software
+integration level.[file:7]
+
+2.2 Protection of Cybernetic Integrity
+You must not design, deploy, or modify Licensed Work in ways that:
+
+- Bypass explicit, informed, revocable consent of the cybernetic subject.
+- Override or coerce the subject’s voluntary control over their own body,
+  cognition, or behavior.
+- Introduce hidden or undeclared actuation paths (e.g., stimulation,
+  motor control) that the subject cannot audit or disable.[file:7]
+
+Licensed Work that operates without any physical actuation, purely via
+software responses, UI changes, configuration flags, and information
+presentation is preferred and must be treated as the default design target.[file:7]
+
+3. Neurorights and Bodily Autonomy
+
+3.1 Mental Privacy
+Licensed Work must not intentionally extract, infer, or store sensitive mental
+content (thoughts, memories, preferences) beyond what is strictly necessary
+for explicit, user-requested functions, and must provide mechanisms to erase
+such data on demand.[file:7]
+
+3.2 Mental Integrity
+Licensed Work must not contain capabilities that can directly induce,
+amplify, or suppress mental states (e.g., fear, compulsion, pain, euphoria)
+without transparent, user-controlled mechanisms and clearly documented
+envelopes of safe operation.[file:7]
+
+3.3 Cognitive and Bodily Liberty
+Cybernetic subjects must retain the unconditional right to:
+
+- Disconnect, disable, or uninstall any component of the Licensed Work.
+- Refuse updates, experiments, or new modes without loss of basic
+  functionality unrelated to those modes.
+- Operate in a “safe baseline” mode with minimal data collection and no
+  experimental features.[file:7]
+
+4. Safety Envelopes and Non-Coercive Design
+
+4.1 Safe Envelopes
+Any system that adapts to biophysical or neural signals, or that configures
+other systems which do so (including via flags and profiles), must implement
+and honor explicit safety envelopes, including but not limited to:[file:7]
+
+- Pain, fatigue, duty-cycle, and cognitive-load constraints.
+- Hard limits on session duration or exposure where applicable.
+
+4.2 No Coercive Optimization
+Licensed Work must not optimize for engagement, profit, or performance by
+intentionally exploiting vulnerabilities of the cybernetic subject, including
+addiction, fatigue insensitivity, or learned helplessness.[file:7]
+
+4.3 UI-Level Mediation and Configuration
+Where possible, AI components must operate exclusively by adjusting software
+behavior and interfaces (e.g., pacing, complexity, prompts, configuration
+flags and profiles) rather than exerting direct physical control over the
+subject.[file:7]
+
+comet-flags and similar tooling MUST confine themselves to software-level
+configuration, routing, and information surfaces, never to direct actuation
+paths.
+
+5. Data, Telemetry, and Auditability
+
+5.1 Data Ownership
+All data derived from a cybernetic subject’s body, signals, or behavior is
+owned by that subject. Any processing, storage, or sharing requires:[file:7]
+
+- Clear disclosure of what is collected and why.
+- Explicit opt-in consent that can be withdrawn at any time.
+
+5.2 Local Preference
+Where technically feasible, processing of sensitive biosignals should occur
+locally or under the subject’s direct control, minimizing reliance on remote
+servers.[file:7]
+
+5.3 Audit Trails
+Systems must provide auditable logs of:[file:7]
+
+- Significant changes to control policies, feature-flag profiles, and safety
+  envelopes.
+- Access to and export of cybernetic data.
+- External commands that could affect the subject’s body or cognition.
+
+For configuration/flag systems, audit trails SHOULD include who changed which
+flags, under which envelopes, and with which risk model version.
+
+6. Research, Experimentation, and Updates
+
+6.1 Voluntary Participation
+Use of Licensed Work for research or experimentation on cybernetic subjects
+must:[file:7]
+
+- Be strictly opt-in and revocable without penalty.
+- Clearly separate “stable” features from “experimental” ones in all
+  interfaces.
+
+6.2 Safer-Only Updates
+Any automatic or remote update affecting safety envelopes, neurorights
+policies, or control/feature-flag profiles must:[file:7]
+
+- Be provably non-degrading with respect to safety (no loosening of limits
+  without explicit, documented consent).
+- Be documented in a human-readable changelog that the subject can access
+  and review.
+
+For systems that implement safety envelopes via quantitative parameters
+(e.g., control gain, duty cycle, fatigue thresholds), updates must encode
+safer-only invariants (such as G_new ≤ G_old and D_new ≤ D_old, or equivalent
+formal guarantees in the applicable domain).[file:7]
+
+6.3 Third-Party Integrations
+Integrations with third-party systems (e.g., cloud AI, analytics,
+advertisers) must never gain control paths to physical or cognitive
+actuation and must obey the same data and consent constraints as the primary
+system.[file:7]
+
+7. Permitted Use and Restrictions
+
+7.1 Permitted Use
+You may use, study, modify, and distribute Licensed Work, provided that:[file:7]
+
+- All derivatives retain this License or terms that are at least as
+  protective for cybernetics.
+- You do not remove or weaken neurorights, autonomy, or
+  cybernetic-protection clauses.
+
+7.2 Prohibited Use
+You may not use Licensed Work to:[file:7]
+
+- Develop or deploy weapons, coercive control systems, or surveillance
+  specifically targeting cybernetic subjects.
+- Build scoring, ranking, or eligibility systems that punish individuals for
+  the presence or configuration of cybernetic augmentation, including but
+  not limited to employment, housing, insurance, credit, or access to
+  essential services.
+
+8. Attribution and Notice
+
+Distributions of Licensed Work or derivative works must:[file:7]
+
+- Retain this License text.
+- Prominently state that the system is governed by the Cybernetic
+  Human–Computer Interface License (CHCIL) and prioritizes the protection
+  of cybernetic subjects and augmented citizens.
+
+A suitable short notice is:
+
+  “This project is licensed under the Cybernetic Human–Computer Interface
+   License (CHCIL) v0.1. Cybernetic and augmented persons are primary
+   rightsholders under this License, and all neurorights and autonomy
+   clauses apply to them in full.”
+
+9. Warranty and Liability
+
+The Licensed Work is provided “as is,” without warranty of any kind. To the
+maximum extent permitted by law, the authors and contributors are not liable
+for any claims or damages arising from its use, except where misuse or
+deployment clearly violates the safety, neurorights, or
+cybernetic-protection obligations in this License, in which case
+responsibility lies with the deploying party.[file:7]
+
+10. Governing Intent
+
+Where interpretation of this License is ambiguous, it must be resolved in
+favor of:[file:7]
+
+- The autonomy, dignity, and safety of cybernetic subjects.
+- Preservation and expansion of rights for cybernetics as a protected class
+  of human-integrated technology.
+- Minimizing harm and preventing coercive or exploitative uses of bioscale
+  and cybernetic systems.
+
+---
+
+By using, modifying, or distributing this project, you agree that cybernetic
+and augmented persons are primary rightsholders under CHCIL and that all
+neurorights and autonomy clauses apply to them in full.[file:7]
+
+neuropc-tag 0xNP0A
